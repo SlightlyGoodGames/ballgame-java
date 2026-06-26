@@ -1,4 +1,4 @@
-package com.ballgame.tiles;
+package com.ballgame.map;
 
 import com.ballgame.enums.TileType;
 import java.io.Serializable;

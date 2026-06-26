@@ -4,11 +4,10 @@ import static com.ballgame.fetchers.LangManager.*;
 import static com.ballgame.fetchers.TextureManager.*;
 import com.ballgame.player.Player;
 import com.ballgame.ui.*;
-import com.ballgame.tiles.Tile;
 import com.ballgame.enums.*;
+import com.ballgame.map.*;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.io.Serializable;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
@@ -17,6 +16,8 @@ import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.FileInputStream;
+import java.util.Map;
+import java.util.HashMap;
 
 class UI{
     static Window frame = new Window(getString("external.window.title"),800,496);
@@ -65,8 +66,7 @@ class Saver{
             Serializable obj = (Serializable)objIn.readObject();
             objIn.close();
             return obj;
-        } catch (Exception e){
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException e){
             System.out.println("Deserialisation failed!");
         }
         return null;
@@ -94,38 +94,36 @@ class Menu{
     @SuppressWarnings("unchecked")
     public static MenuMode launchEditor(){
         Player player = new Player(800,0);
-        ArrayList<Tile> allTiles = new ArrayList<Tile>();
+        Map<Coord,Tile> allTiles = new HashMap<Coord,Tile>();
         try{
-            allTiles = (ArrayList<Tile>) Saver.load("generated/saves/map.dat");
+            allTiles = (Map<Coord,Tile>) Saver.load("generated/saves/map.dat");
         } catch (Exception e){
             System.out.println("Error reading from file!");
         }
+        if(allTiles == null){
+            allTiles = new HashMap<Coord,Tile>();
+        }
         BufferedImage img;
         boolean[] groupsAround;
-        int dx;
-        int dy;
         boolean hasExited;
         int index;
-        long currentTimeMillis = System.nanoTime();
+        long currentTimeMillis = System.currentTimeMillis();
+        int frameAmount = 0;
         EditorPlaceMode placeMode = EditorPlaceMode.INVALID;
         while(true){
             UI.clear();
-            for(Tile renderTile : allTiles){
+            for(Tile renderTile : allTiles.values()){
                 groupsAround = new boolean[]{false,false,false,false,false,false,false,false,false};
                 img = getTexture("map.tile."+renderTile.type.getPlainName());
                 UI.addObj(img,renderTile.x,renderTile.y);
 
-                for(Tile t : allTiles){
-                    dx = (t.x-renderTile.x)/32;
-                    dy = (t.y-renderTile.y)/32;
-                    if (-1 <= dx && dx <= 1 && -1 <= dy && dy <= 1) {
-                        groupsAround[(dy+1)*3+(dx+1)] = true;
-                    }
+                for(index=0;index<=8;index++){
+                    groupsAround[index] = allTiles.containsKey(new Coord(renderTile.x+(index % 3)*32-32,renderTile.y+(index/3)*32-32));
                 }
                 
                 index = 0;
                 for(boolean b : groupsAround){
-                    if(!b){
+                    if(!b && index != 4){
                         img = getTexture("map.tile.outlines.air"+index);
                         UI.addObj(img,renderTile.x,renderTile.y);
                     }
@@ -137,9 +135,9 @@ class Menu{
                 int[] mouseTilePos = new int[]{((int)UI.canvas.mouseX/32)*32,((int)UI.canvas.mouseY/32)*32};
                 hasExited = false;
                 if(placeMode == EditorPlaceMode.INVALID || placeMode == EditorPlaceMode.DELETE){
-                    for(Tile t : allTiles){
+                    for(Tile t : allTiles.values()){
                         if(mouseTilePos[0] == t.x && mouseTilePos[1] == t.y){
-                            allTiles.remove(t);
+                            allTiles.remove(new Coord(mouseTilePos[0],mouseTilePos[1]));
                             hasExited = true;
                             placeMode = EditorPlaceMode.DELETE;
                             break;
@@ -147,11 +145,11 @@ class Menu{
                     }
                 }
                 if(!hasExited && (placeMode == EditorPlaceMode.INVALID || placeMode == EditorPlaceMode.PLACE)){
-                    allTiles.add(new Tile(TileType.BRICK,mouseTilePos[0],mouseTilePos[1]));
+                    allTiles.put(new Coord(mouseTilePos[0],mouseTilePos[1]),new Tile(TileType.BRICK,mouseTilePos[0],mouseTilePos[1]));
                     placeMode = EditorPlaceMode.PLACE;
                 }
                 if(mouseTilePos[0] > 800){
-                    Saver.save(allTiles,"generated/saves/map.dat");
+                    Saver.save((Serializable)allTiles,"generated/saves/map.dat");
                 }
             } else {
                 placeMode = EditorPlaceMode.INVALID;
@@ -160,9 +158,12 @@ class Menu{
             UI.addObj(img,player.x,player.y);
             UI.update();
             try{
-                Thread.sleep(1);
-                System.out.println("Current FPS: "+1000000000/(System.nanoTime()-currentTimeMillis));
-                currentTimeMillis = System.nanoTime();
+                frameAmount++;
+                if(System.currentTimeMillis()-currentTimeMillis >= 1000){
+                    System.out.print("\r\033[KCurrent FPS: "+frameAmount);
+                    currentTimeMillis = System.currentTimeMillis();
+                    frameAmount = 0;
+                }
             } catch(Exception e){
                 e.printStackTrace();
                 System.out.println("Possible InterruptedException!");
