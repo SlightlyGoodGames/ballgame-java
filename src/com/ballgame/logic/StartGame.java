@@ -3,9 +3,12 @@ package com.ballgame.logic;
 import static com.ballgame.fetchers.LangManager.*;
 import static com.ballgame.fetchers.TextureManager.*;
 import com.ballgame.player.Player;
-import com.ballgame.ui.*;
-import com.ballgame.enums.*;
-import com.ballgame.map.*;
+import com.ballgame.ui.Component;
+import com.ballgame.ui.Panel;
+import com.ballgame.ui.Window;
+import com.ballgame.enums.TileType;
+import com.ballgame.map.Coord;
+import com.ballgame.map.Tile;
 
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
