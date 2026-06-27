@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 
 class UI{
     static Window frame = new Window(getString("external.window.title"),800,496);
@@ -79,7 +80,7 @@ class Saver{
 }
 
 enum MenuMode{
-    EDITOR,ERROR;
+    EDITOR,ERROR,QUIT;
 }
 
 enum EditorPlaceMode{
@@ -93,6 +94,9 @@ class Menu{
                 return launchEditor();
             case MenuMode.ERROR:
                 return launchEditor();
+            case MenuMode.QUIT:
+                UI.frame.dispatchEvent(new WindowEvent(UI.frame, WindowEvent.WINDOW_CLOSING));
+                System.exit(0);
         }
         return MenuMode.ERROR;
     }
@@ -172,6 +176,10 @@ class Menu{
                     placeType = TileType.BRICK;
                 } else if(k == KeyEvent.VK_2){
                     placeType = TileType.SPIKE;
+                } else if(k == KeyEvent.VK_3){
+                    placeType = TileType.GLUE;
+                } else if(k == KeyEvent.VK_Q){
+                    return MenuMode.QUIT;
                 }
             }
 
@@ -186,7 +194,6 @@ class Menu{
                     frameAmount = 0;
                 }
             } catch(Exception e){
-                e.printStackTrace();
                 System.out.println("Possible InterruptedException!");
             }
         }

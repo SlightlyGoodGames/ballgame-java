@@ -1,7 +1,7 @@
 package com.ballgame.enums;
 
 public enum TileType{
-    BRICK("brick"),SPIKE("spike");
+    BRICK("brick"),SPIKE("spike"),GLUE("glue");
     private final String plainName;
     TileType(String plainName){
         this.plainName = plainName;

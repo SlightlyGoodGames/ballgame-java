@@ -17,7 +17,6 @@ public class TextureManager{
             }
             return texture;
         } catch (Exception e){
-            e.printStackTrace();
             return getTexture("global.unknown");
         }
     }
