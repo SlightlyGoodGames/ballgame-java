@@ -7,12 +7,15 @@ import java.awt.image.BufferedImage;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class Panel extends JPanel{
     private ArrayList<Component> img = new ArrayList<Component>();
     private ArrayList<Component> imgIterable;
     public int mouseX;
     public int mouseY;
+    public ArrayList<Integer> keyPresses = new ArrayList<Integer>();
     public boolean mouseDown;
     private boolean isActive;
     public boolean releasedRecently;
@@ -50,6 +53,16 @@ public class Panel extends JPanel{
                 Panel.this.mouseY = e.getY();
             }
         });
+        addKeyListener(new KeyListener(){
+            @Override
+            public void keyPressed(KeyEvent e){
+                Panel.this.keyPresses.add(e.getKeyCode());
+            }
+            @Override
+            public void keyTyped(KeyEvent e){}
+            @Override
+            public void keyReleased(KeyEvent e){}
+        });
     }
     @Override
     @SuppressWarnings("unchecked")
@@ -76,5 +89,11 @@ public class Panel extends JPanel{
     }
     public void tick(){
         this.releasedRecently = false;
+    }
+    public ArrayList<Integer> readKeyPresses(){
+        @SuppressWarnings("unchecked")
+        ArrayList<Integer> presses = (ArrayList<Integer>)this.keyPresses.clone();
+        this.keyPresses.clear();
+        return presses;
     }
 }

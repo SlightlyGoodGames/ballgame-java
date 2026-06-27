@@ -12,4 +12,15 @@ public class Tile implements Serializable{
         this.x = x;
         this.y = y;
     }
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof Tile)){return false;}
+        if(o==this){return true;}
+        Tile t = (Tile)o;
+        return (t.type==this.type&&t.x==this.x&&t.y==this.y);
+    }
+    @Override
+    public int hashCode(){
+        return this.x*31+this.y+this.type.ordinal()*2000;
+    }
 }

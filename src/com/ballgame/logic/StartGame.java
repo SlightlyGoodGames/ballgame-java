@@ -21,6 +21,8 @@ import java.nio.file.Path;
 import java.io.FileInputStream;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.awt.event.KeyEvent;
 
 class UI{
     static Window frame = new Window(getString("external.window.title"),800,496);
@@ -113,27 +115,32 @@ class Menu{
         long currentTimeMillis = System.currentTimeMillis();
         int frameAmount = 0;
         EditorPlaceMode placeMode = EditorPlaceMode.INVALID;
+        ArrayList<Integer> keyPresses;
+        TileType placeType = TileType.BRICK;
         while(true){
             UI.clear();
             for(Tile renderTile : allTiles.values()){
-                groupsAround = new boolean[]{false,false,false,false,false,false,false,false,false};
                 img = getTexture("map.tile."+renderTile.type.getPlainName());
                 UI.addObj(img,renderTile.x,renderTile.y);
+                if(renderTile.type == TileType.BRICK){
+                    groupsAround = new boolean[]{false,false,false,false,false,false,false,false,false};
 
-                for(index=0;index<=8;index++){
-                    groupsAround[index] = allTiles.containsKey(new Coord(renderTile.x+(index % 3)*32-32,renderTile.y+(index/3)*32-32));
-                }
-                
-                index = 0;
-                for(boolean b : groupsAround){
-                    if(!b && index != 4){
-                        img = getTexture("map.tile.outlines.air"+index);
-                        UI.addObj(img,renderTile.x,renderTile.y);
+                    for(index=0;index<=8;index++){
+                        groupsAround[index] = allTiles.containsValue(new Tile(TileType.BRICK,renderTile.x+(index % 3)*32-32,renderTile.y+(index/3)*32-32));
                     }
-                    index++;
+
+                    index = 0;
+                    for(boolean b : groupsAround){
+                        if(!b && index != 4){
+                            img = getTexture("map.tile.outlines.air"+index);
+                            UI.addObj(img,renderTile.x,renderTile.y);
+                        }
+                        index++;
+                    }
                 }
             }
 
+            //Mouse handling
             if(UI.canvas.mouseDown){
                 int[] mouseTilePos = new int[]{((int)UI.canvas.mouseX/32)*32,((int)UI.canvas.mouseY/32)*32};
                 hasExited = false;
@@ -147,8 +154,8 @@ class Menu{
                         }
                     }
                 }
-                if(!hasExited && (placeMode == EditorPlaceMode.INVALID || placeMode == EditorPlaceMode.PLACE)){
-                    allTiles.put(new Coord(mouseTilePos[0],mouseTilePos[1]),new Tile(TileType.BRICK,mouseTilePos[0],mouseTilePos[1]));
+                if(!hasExited && (placeMode == EditorPlaceMode.INVALID || placeMode == EditorPlaceMode.PLACE) && !allTiles.containsValue(new Tile(placeType,mouseTilePos[0],mouseTilePos[1]))){
+                    allTiles.put(new Coord(mouseTilePos[0],mouseTilePos[1]),new Tile(placeType,mouseTilePos[0],mouseTilePos[1]));
                     placeMode = EditorPlaceMode.PLACE;
                 }
                 if(mouseTilePos[0] > 800){
@@ -157,6 +164,17 @@ class Menu{
             } else {
                 placeMode = EditorPlaceMode.INVALID;
             }
+
+            //Key handling
+            keyPresses = UI.canvas.readKeyPresses();
+            for(int k : keyPresses){
+                if(k == KeyEvent.VK_1){
+                    placeType = TileType.BRICK;
+                } else if(k == KeyEvent.VK_2){
+                    placeType = TileType.SPIKE;
+                }
+            }
+
             img = getTexture("map.player.skin1");
             UI.addObj(img,player.x,player.y);
             UI.update();
