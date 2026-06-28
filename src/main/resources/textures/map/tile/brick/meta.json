@@ -1,0 +1,14 @@
+{
+    "method":"add",
+    "usewhen":"not",
+    "images":{
+        "0":"map.tile.brick.air0",
+        "1":"map.tile.brick.air1",
+        "2":"map.tile.brick.air2",
+        "3":"map.tile.brick.air3",
+        "5":"map.tile.brick.air5",
+        "6":"map.tile.brick.air6",
+        "7":"map.tile.brick.air7",
+        "8":"map.tile.brick.air8"
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "method":"replace",
+    "usewhen":"is",
+    "images":{
+        "1":"map.tile.glue.gluefull"
+    }
+}

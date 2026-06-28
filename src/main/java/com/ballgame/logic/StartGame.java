@@ -25,12 +25,6 @@ import java.util.ArrayList;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 
-class Helper{
-    public static BufferedImage getDefImage(String textureCode){
-        return getTexture(textureCode+".default");
-    }
-}
-
 class UI{
     static Window frame = new Window(getString("external.window.title"),800,496);
     static Panel canvas = new Panel();
@@ -86,7 +80,7 @@ class Saver{
 }
 
 enum MenuMode{
-    EDITOR,ERROR,QUIT;
+    EDITOR,ERROR,QUIT,DEBUG;
 }
 
 enum EditorPlaceMode{
@@ -96,15 +90,20 @@ enum EditorPlaceMode{
 class Menu{
     public static MenuMode autoLaunchMenu(MenuMode mode){
         switch(mode){
-            case MenuMode.EDITOR:
+            case EDITOR:
                 return launchEditor();
-            case MenuMode.ERROR:
+            case ERROR:
                 return launchEditor();
-            case MenuMode.QUIT:
+            case QUIT:
                 UI.frame.dispatchEvent(new WindowEvent(UI.frame, WindowEvent.WINDOW_CLOSING));
                 System.exit(0);
+            case DEBUG:
+                return launchDebugCode();
         }
         return MenuMode.ERROR;
+    }
+    public static MenuMode launchDebugCode(){
+        return MenuMode.EDITOR;
     }
     @SuppressWarnings("unchecked")
     public static MenuMode launchEditor(){
@@ -127,25 +126,40 @@ class Menu{
         EditorPlaceMode placeMode = EditorPlaceMode.INVALID;
         ArrayList<Integer> keyPresses;
         TileType placeType = TileType.BRICK;
+        String textureCode;
+        Map<String,Object> textureMeta;
+        Map<String,String> images;
+        boolean replaceUsed;
         while(true){
             UI.clear();
             for(Tile renderTile : allTiles.values()){
-                img = Helper.getDefImage("map.tile."+renderTile.type.getPlainName());
-                UI.addObj(img,renderTile.x,renderTile.y);
-                if(renderTile.type == TileType.BRICK){
+                textureCode = "map.tile."+renderTile.type.getPlainName();
+                textureMeta = getTextureMeta(textureCode);
+                if(textureMeta.get("method").equals("add") || textureMeta.get("method").equals("none")){
+                    img = getTexture(textureCode);
+                    UI.addObj(img,renderTile.x,renderTile.y);
+                }
+                if(!(textureMeta.get("method").equals("none"))){
                     groupsAround = new boolean[]{false,false,false,false,false,false,false,false,false};
 
                     for(index=0;index<=8;index++){
-                        groupsAround[index] = allTiles.containsValue(new Tile(TileType.BRICK,renderTile.x+(index % 3)*32-32,renderTile.y+(index/3)*32-32));
+                        groupsAround[index] = allTiles.containsValue(new Tile(renderTile.type,renderTile.x+(index % 3)*32-32,renderTile.y+(index/3)*32-32));
                     }
 
+                    replaceUsed = false;
+                    images = (Map<String,String>)textureMeta.get("images");
                     index = 0;
                     for(boolean b : groupsAround){
-                        if(!b && index != 4){
-                            img = getTexture("map.tile.brick.air"+index);
+                        if(((!b && textureMeta.get("usewhen").equals("not")) || (b && textureMeta.get("usewhen").equals("is"))) && images.containsKey(String.valueOf(index))){
+                            img = getRawTexture(images.get(String.valueOf(index)));
                             UI.addObj(img,renderTile.x,renderTile.y);
+                            replaceUsed = true;
                         }
                         index++;
+                    }
+                    if(!replaceUsed){
+                        img = getTexture(textureCode);
+                        UI.addObj(img,renderTile.x,renderTile.y);
                     }
                 }
             }
@@ -211,7 +225,7 @@ class Menu{
 public class StartGame{
     public static void main(String[] args){
         UI.setup();
-        MenuMode newMode = MenuMode.EDITOR;
+        MenuMode newMode = MenuMode.DEBUG;
         while(true){
             newMode = Menu.autoLaunchMenu(newMode);
         }
