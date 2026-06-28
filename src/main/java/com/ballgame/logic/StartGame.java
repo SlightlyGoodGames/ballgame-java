@@ -198,6 +198,8 @@ class Menu{
                     placeType = TileType.SPIKE;
                 } else if(k == KeyEvent.VK_3){
                     placeType = TileType.GLUE;
+                } else if(k == KeyEvent.VK_4){
+                    placeType = TileType.LADDER;
                 } else if(k == KeyEvent.VK_Q){
                     return MenuMode.QUIT;
                 } else if(k == KeyEvent.VK_C){

@@ -1,0 +1,8 @@
+{
+    "method":"add",
+    "usewhen":"not",
+    "images":{
+        "1":"map.tile.ladder.endup",
+        "7":"map.tile.ladder.enddown"
+    }
+}
