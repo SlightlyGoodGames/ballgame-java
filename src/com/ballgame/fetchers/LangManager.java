@@ -12,7 +12,7 @@ public class LangManager{
         String[] pathComponents = stringCode.split("\\.");
         String finalCode = pathComponents[pathComponents.length-1];
         String[] splitPath = Arrays.copyOfRange(pathComponents,0,pathComponents.length-1);
-        String fullPath = "/assets/lang/"+String.join("/",splitPath)+".properties";
+        String fullPath = "/lang/"+String.join("/",splitPath)+".properties";
         try{
             InputStream fileIn = LangManager.class.getResourceAsStream(fullPath);
             Properties fileParameters = new Properties();

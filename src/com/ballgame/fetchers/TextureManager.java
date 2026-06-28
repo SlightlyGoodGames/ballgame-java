@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 public class TextureManager{
     private static Map<String,BufferedImage> cachedTextures = new HashMap<String,BufferedImage>();
     public static BufferedImage findTexture(String textureCode){
-        String fullPath = "/assets/textures/"+textureCode.replace(".","/")+".png";
+        String fullPath = "/textures/"+textureCode.replace(".","/")+".png";
         try{
             BufferedImage texture = ImageIO.read(TextureManager.class.getResourceAsStream(fullPath));
             if(!cachedTextures.containsKey(textureCode)){

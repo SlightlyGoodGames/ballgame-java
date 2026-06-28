@@ -25,6 +25,12 @@ import java.util.ArrayList;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 
+class Helper{
+    public static BufferedImage getDefImage(String textureCode){
+        return getTexture(textureCode+".default");
+    }
+}
+
 class UI{
     static Window frame = new Window(getString("external.window.title"),800,496);
     static Panel canvas = new Panel();
@@ -124,7 +130,7 @@ class Menu{
         while(true){
             UI.clear();
             for(Tile renderTile : allTiles.values()){
-                img = getTexture("map.tile."+renderTile.type.getPlainName());
+                img = Helper.getDefImage("map.tile."+renderTile.type.getPlainName());
                 UI.addObj(img,renderTile.x,renderTile.y);
                 if(renderTile.type == TileType.BRICK){
                     groupsAround = new boolean[]{false,false,false,false,false,false,false,false,false};
@@ -136,7 +142,7 @@ class Menu{
                     index = 0;
                     for(boolean b : groupsAround){
                         if(!b && index != 4){
-                            img = getTexture("map.tile.outlines.air"+index);
+                            img = getTexture("map.tile.brick.air"+index);
                             UI.addObj(img,renderTile.x,renderTile.y);
                         }
                         index++;
@@ -180,6 +186,8 @@ class Menu{
                     placeType = TileType.GLUE;
                 } else if(k == KeyEvent.VK_Q){
                     return MenuMode.QUIT;
+                } else if(k == KeyEvent.VK_C){
+                    allTiles.clear();
                 }
             }
 
