@@ -2,14 +2,16 @@ package com.ballgame.fetchers;
 
 import java.util.Map;
 import java.util.HashMap;
-
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import javax.imageio.ImageIO;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import java.awt.image.BufferedImage;
 
 public class TextureManager{
     private static Map<String,BufferedImage> cachedTextures = new HashMap<String,BufferedImage>();
     private static Map<String,Map<String,Object>> cachedMetas = new HashMap<String,Map<String,Object>>();
+    private static final Gson gson = new Gson();
     public static BufferedImage findTexture(String textureCode){
         String fullPath = getFullPath(textureCode)+"/default.png";
         try{
@@ -62,10 +64,10 @@ public class TextureManager{
     }
     public static Map<String,Object> findTextureMeta(String textureCode){
         String file = getFullPath(textureCode)+"/meta.json";
-        ObjectMapper objMapper = new ObjectMapper();
+        InputStream inputStream = TextureManager.class.getResourceAsStream(file);
         try{
             @SuppressWarnings("unchecked")
-            Map<String,Object> map = objMapper.readValue(TextureManager.class.getResourceAsStream(file),Map.class);
+            Map<String,Object> map = gson.fromJson(new InputStreamReader(inputStream),Map.class);
             if(!cachedMetas.containsKey(textureCode)){
                 cachedMetas.put(textureCode,map);
             }
