@@ -1,7 +1,20 @@
 {
-    "method":"replace",
-    "usewhen":"is",
-    "images":{
-        "1":"map.tile.glue.gluefull"
-    }
+    "loopfr":100,
+    "frames":[{
+        "begin":0,
+        "method":"replace",
+        "usewhen":"is",
+        "images":{
+            "1":"map.tile.glue.gluefull",
+            "default":"map.tile.glue.gluelow"
+        }
+    },{
+        "begin":50,
+        "method":"replace",
+        "usewhen":"is",
+        "images":{
+            "1":"map.tile.glue.gluefull",
+            "default":"map.tile.glue.gluehigh"
+        }
+    }]
 }

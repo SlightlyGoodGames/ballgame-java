@@ -122,21 +122,40 @@ class Menu{
         boolean hasExited;
         int index;
         long currentTimeMillis = System.currentTimeMillis();
+        long animResetMillis = System.currentTimeMillis();
         int frameAmount = 0;
         EditorPlaceMode placeMode = EditorPlaceMode.INVALID;
         ArrayList<Integer> keyPresses;
         TileType placeType = TileType.BRICK;
         String textureCode;
         Map<String,Object> textureMeta;
+        Map<String,Object> globalTextureMeta;
         Map<String,String> images;
+        ArrayList<Map<String,Object>> allFrames;
         boolean replaceUsed;
+        long animationFrames = 0;
+        int nextAnim;
+        double totalAnimMs;
         while(true){
             UI.clear();
             for(Tile renderTile : allTiles.values()){
                 textureCode = "map.tile."+renderTile.type.getPlainName();
-                textureMeta = getTextureMeta(textureCode);
+                globalTextureMeta = getTextureMeta(textureCode);
+                nextAnim = 0;
+                allFrames = (ArrayList<Map<String,Object>>)globalTextureMeta.get("frames");
+                totalAnimMs = (double)globalTextureMeta.get("loopfr");
+                System.out.println(animationFrames);
+                for(Map<String,Object> s : allFrames){
+                    if((double)s.get("begin") <= animationFrames%totalAnimMs){
+                        nextAnim++;
+                    } else {
+                        break;
+                    }
+                }
+                textureMeta = ((ArrayList<Map<String,Object>>)globalTextureMeta.get("frames")).get(nextAnim-1);
+                images = (Map<String,String>)textureMeta.get("images");
                 if(textureMeta.get("method").equals("add") || textureMeta.get("method").equals("none")){
-                    img = getTexture(textureCode);
+                    img = getRawTexture(images.get("default"));
                     UI.addObj(img,renderTile.x,renderTile.y);
                 }
                 if(!(textureMeta.get("method").equals("none"))){
@@ -147,7 +166,6 @@ class Menu{
                     }
 
                     replaceUsed = false;
-                    images = (Map<String,String>)textureMeta.get("images");
                     index = 0;
                     for(boolean b : groupsAround){
                         if(((!b && textureMeta.get("usewhen").equals("not")) || (b && textureMeta.get("usewhen").equals("is"))) && images.containsKey(String.valueOf(index))){
@@ -157,8 +175,8 @@ class Menu{
                         }
                         index++;
                     }
-                    if(!replaceUsed){
-                        img = getTexture(textureCode);
+                    if(!replaceUsed && textureMeta.get("method").equals("replace")){
+                        img = getRawTexture((String)images.get("default"));
                         UI.addObj(img,renderTile.x,renderTile.y);
                     }
                 }
@@ -210,16 +228,16 @@ class Menu{
             img = getTexture("map.player.skin1");
             UI.addObj(img,player.x,player.y);
             UI.update();
-            try{
-                frameAmount++;
-                if(System.currentTimeMillis()-currentTimeMillis >= 1000){
-                    System.out.print("\r\033[KCurrent FPS: "+frameAmount);
-                    currentTimeMillis = System.currentTimeMillis();
-                    frameAmount = 0;
-                }
-            } catch(Exception e){
-                System.out.println("Possible InterruptedException!");
+            frameAmount++;
+            if(System.currentTimeMillis()-currentTimeMillis >= 1000){
+                System.out.print("\r\033[KCurrent FPS: "+frameAmount);
+                currentTimeMillis = System.currentTimeMillis();
+                frameAmount = 0;
             }
+            if(System.currentTimeMillis()-animResetMillis >= 30000){
+                animResetMillis = System.currentTimeMillis();
+            }
+            animationFrames = (System.currentTimeMillis()-animResetMillis)/20L;
         }
     }
 }
