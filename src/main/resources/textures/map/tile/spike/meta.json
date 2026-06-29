@@ -1,3 +1,10 @@
 {
-    "method":"none"
+    "loopfr":50,
+    "frames":[{
+        "begin":0,
+        "method":"none",
+        "images":{
+            "default":"map.tile.spike.default"
+        }
+    }]
 }

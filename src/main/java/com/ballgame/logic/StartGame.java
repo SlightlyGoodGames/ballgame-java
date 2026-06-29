@@ -144,7 +144,6 @@ class Menu{
                 nextAnim = 0;
                 allFrames = (ArrayList<Map<String,Object>>)globalTextureMeta.get("frames");
                 totalAnimMs = (double)globalTextureMeta.get("loopfr");
-                System.out.println(animationFrames);
                 for(Map<String,Object> s : allFrames){
                     if((double)s.get("begin") <= animationFrames%totalAnimMs){
                         nextAnim++;
@@ -218,6 +217,8 @@ class Menu{
                     placeType = TileType.GLUE;
                 } else if(k == KeyEvent.VK_4){
                     placeType = TileType.LADDER;
+                } else if(k == KeyEvent.VK_5){
+                    placeType = TileType.FLAG;
                 } else if(k == KeyEvent.VK_Q){
                     return MenuMode.QUIT;
                 } else if(k == KeyEvent.VK_C){

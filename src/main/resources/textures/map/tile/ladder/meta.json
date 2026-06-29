@@ -1,8 +1,13 @@
 {
-    "method":"add",
-    "usewhen":"not",
-    "images":{
-        "1":"map.tile.ladder.endup",
-        "7":"map.tile.ladder.enddown"
-    }
+    "loopfr":50,
+    "frames":[{
+        "begin":0,
+        "method":"add",
+        "usewhen":"not",
+        "images":{
+            "1":"map.tile.ladder.endup",
+            "7":"map.tile.ladder.enddown",
+            "default":"map.tile.ladder.default"
+        }
+    }]
 }

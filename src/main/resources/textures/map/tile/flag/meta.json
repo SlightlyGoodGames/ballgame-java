@@ -1,0 +1,18 @@
+{
+    "loopfr":50,
+    "frames":[{
+        "begin":0,
+        "method":"replace",
+        "usewhen":"is",
+        "images":{
+            "default":"map.tile.flag.flaghigh"
+        }
+    },{
+        "begin":25,
+        "method":"replace",
+        "usewhen":"is",
+        "images":{
+            "default":"map.tile.flag.flaglow"
+        }
+    }]
+}
