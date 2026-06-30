@@ -199,9 +199,6 @@ class Menu{
                     allTiles.put(new Coord(mouseTilePos[0],mouseTilePos[1]),new Tile(placeType,mouseTilePos[0],mouseTilePos[1]));
                     placeMode = EditorPlaceMode.PLACE;
                 }
-                if(mouseTilePos[0] > 800){
-                    Saver.save((Serializable)allTiles,"generated/saves/map.dat");
-                }
             } else {
                 placeMode = EditorPlaceMode.INVALID;
             }
@@ -223,6 +220,8 @@ class Menu{
                     return MenuMode.QUIT;
                 } else if(k == KeyEvent.VK_C){
                     allTiles.clear();
+                } else if(k == KeyEvent.VK_S){
+                    Saver.save((Serializable)allTiles,"generated/saves/map.dat");
                 }
             }
 

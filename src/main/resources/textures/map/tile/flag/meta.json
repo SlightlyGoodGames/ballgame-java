@@ -1,18 +1,36 @@
 {
-    "loopfr":50,
+    "loopfr":90,
     "frames":[{
         "begin":0,
         "method":"replace",
         "usewhen":"is",
         "images":{
-            "default":"map.tile.flag.flaghigh"
+            "default":"map.tile.flag.flaghigh",
+            "1":"map.tile.flag.flagpole"
         }
     },{
-        "begin":25,
+        "begin":40,
         "method":"replace",
         "usewhen":"is",
         "images":{
-            "default":"map.tile.flag.flaglow"
+            "default":"map.tile.flag.flagmid",
+            "1":"map.tile.flag.flagpole"
+        }
+    },{
+        "begin":45,
+        "method":"replace",
+        "usewhen":"is",
+        "images":{
+            "default":"map.tile.flag.flaglow",
+            "1":"map.tile.flag.flagpole"
+        }
+    },{
+        "begin":85,
+        "method":"replace",
+        "usewhen":"is",
+        "images":{
+            "default":"map.tile.flag.flagmid",
+            "1":"map.tile.flag.flagpole"
         }
     }]
 }
