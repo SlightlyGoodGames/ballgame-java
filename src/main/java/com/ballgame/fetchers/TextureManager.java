@@ -72,10 +72,7 @@ public class TextureManager{
                 cachedMetas.put(textureCode,map);
             }
             return map;
-        } catch (Exception e){
-            e.printStackTrace();
-            System.out.println("Failed to load");
-        }
+        } catch (Exception e){}
         return null;
     }
     public static Map<String,Object> getTextureMeta(String textureCode){

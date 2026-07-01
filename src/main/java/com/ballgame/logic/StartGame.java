@@ -216,6 +216,8 @@ class Menu{
                     placeType = TileType.LADDER;
                 } else if(k == KeyEvent.VK_5){
                     placeType = TileType.FLAG;
+                } else if(k == KeyEvent.VK_6){
+                    placeType = TileType.BELT;
                 } else if(k == KeyEvent.VK_Q){
                     return MenuMode.QUIT;
                 } else if(k == KeyEvent.VK_C){

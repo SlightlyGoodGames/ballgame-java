@@ -1,0 +1,22 @@
+{
+    "loopfr":20,
+    "frames":[{
+        "begin":0,
+        "method":"add",
+        "usewhen":"is",
+        "images":{
+            "3":"map.tile.belt.left1",
+            "5":"map.tile.belt.right1",
+            "default":"map.tile.belt.default1"
+        }
+    },{
+        "begin":10,
+        "method":"add",
+        "usewhen":"is",
+        "images":{
+            "3":"map.tile.belt.left2",
+            "5":"map.tile.belt.right2",
+            "default":"map.tile.belt.default2"
+        }
+    }]
+}
